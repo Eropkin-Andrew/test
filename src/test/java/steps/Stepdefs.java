@@ -28,6 +28,11 @@ public class Stepdefs {
         Assert.assertEquals(expectedBase, Store.getStore().safeGet("received base"));
     }
 
+    @Then("^User check historical is absent$")
+    public void userCheckHistoricalIsAbsent(){
+        Assert.assertEquals("NOT ABSENT", Store.getStore().safeGet("received historical"));
+    }
+
     @Then("^User check historical \"([^\"]*)\"$")
     public void checkHistorical(String expectedHistorical){
         Assert.assertEquals(expectedHistorical, Store.getStore().safeGet("received historical"));
@@ -41,28 +46,28 @@ public class Stepdefs {
 
     @Then("^User check rate \"([^\"]*)\"$")
     public void checkRate(String currency){
+        String sum = Store.getStore().safeGet(currency);
+        Assert.assertNotEquals("Отсутствует курс для 'EUR'", "NOT FOUND", sum);
         switch(currency){
             case "EUR":
-                checkEUR();
-                break;
-            case "RUB":
-                checkRUB();
+                checkBase(sum);
                 break;
             default:
-                new AssertionError("Expected values: 'EUR', 'RUB'. Received value: '" + currency + "'");
+                checkOther(currency, sum);
         }
     }
 
-    private void checkEUR(){
-        String sum = Store.getStore().safeGet("EUR");
-        Assert.assertNotEquals("Empty value: 'EUR'", "NOT FOUND", sum);
+    private void checkBase(String sum){
         Assert.assertEquals("1", sum);
     }
 
-    private void checkRUB(){
-        String sum = Store.getStore().safeGet("RUB");
-        Assert.assertNotEquals("Empty value: 'RUB'", "NOT FOUND", sum);
-        Float rub = Float.parseFloat(sum);
-        Assert.assertTrue("Exchange rate must be positive", rub > 0 );
+    private void checkOther(String currency, String sum){
+        try{
+            Float rub = Float.parseFloat(sum);
+            Assert.assertTrue("Курс обмена должен быть положительным", rub > 0 );
+        } catch (NumberFormatException e){
+            Assert.fail("сохраненное значение '" + currency + "' равное '" + sum +"' не может быть преобразовано в число.");
+        }
     }
+
 }
