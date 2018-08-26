@@ -38,6 +38,11 @@ public class Stepdefs {
         Assert.assertEquals(expectedHistorical, Store.getStore().safeGet("received historical"));
     }
 
+    @Then("^User check success \"([^\"]*)\"$")
+    public void userCheckSuccess(String expectedSuccess){
+        Assert.assertEquals(expectedSuccess, Store.getStore().safeGet("received success"));
+    }
+
     @Then("^User check date$")
     public void checkDate(){
         Assert.assertEquals(Store.getStore().safeGet("expected date"), Store.getStore().safeGet("received date"));
@@ -69,5 +74,4 @@ public class Stepdefs {
             Assert.fail("сохраненное значение '" + currency + "' равное '" + sum +"' не может быть преобразовано в число.");
         }
     }
-
 }

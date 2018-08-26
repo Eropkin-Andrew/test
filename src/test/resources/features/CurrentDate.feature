@@ -11,6 +11,7 @@ Feature: Проверка апи курсов валют
   - курс Рубля к Евро представляет из себя положительное число
 
     When User get current exchange rate
+    Then User check success "true"
     Then User check base currency "EUR"
     Then User check date
     Then User check historical is absent
@@ -27,6 +28,7 @@ Feature: Проверка апи курсов валют
   - курс Рубля к Евро представляет из себя положительное число
 
     When User get exchange rate on date "2000-01-03"
+    Then User check success "true"
     Then User check base currency "EUR"
     Then User check date
     Then User check historical "true"
